@@ -1,0 +1,222 @@
+<style>
+  .advanced-search label{
+    display:block;
+  }
+
+ .advanced-search .mod-content{
+        padding: 10px;
+  }
+
+  #content .products-category.loading{
+    position:relative;
+  }
+
+  #content .products-category.loading::after{
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    top: 0;
+    left: 0;
+    z-index: 2;
+  }
+
+  .advanced-search .modtitle button{
+    border-radius: 50%;
+    border: none;
+    margin-left: auto;
+    background-color: transparent;
+    font-size: 20px;
+  }
+
+  .advanced-search .modtitle{
+    display: flex;
+    align-items: center;
+  }
+
+  .advanced-search .mod-content a{
+    display:block;
+  }
+
+  .advanced-search .child1{
+    padding-left:10px;
+  }
+
+ .advanced-search .child2{
+    padding-left:20px;
+  }
+
+  .advanced-search a.active{
+    color: #e00000;
+    font-weight: bold;
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.css" rel="stylesheet">
+<div class="advanced-search module category-style">
+  <h3 class="modtitle"><span>Kategori </span> <button type="button"><i class="fa fa-angle-down" aria-hidden="true"></i></button></h3>
+  <div class="mod-content box-category ff">
+    {% for category_1 in categories %}
+           <a class="category{{category_1.category_id}}" data-id="{{category_1.category_id}}">{{ category_1.name }}</a>
+
+           {% for category_2 in category_1.children %}
+                 <a class="child1 category{{category_2.category_id}}" data-id="{{category_2.category_id}}">{{ category_2.name }}</a>
+
+            {% for category_3 in category_2.children %}
+
+                <a class="child2 category{{category_3.category_id}}" data-id="{{category_3.category_id}}">{{ category_3.name }}</a>
+
+            {% endfor %}
+
+           {% endfor %}
+    {% endfor %}
+  </div>
+</div>
+
+<div class="advanced-search module category-style">
+  <h3 class="modtitle"><span>Lokasi </span> <button type="button"><i class="fa fa-angle-down" aria-hidden="true"></i></button></h3>
+  <div class="mod-content box-category" style="display:none;">
+      {% for zone in zones %}
+        <label>
+            <input {% if zone.zone_id in locations %} checked {% endif %} type="checkbox" name="search_location" value="{{zone.zone_id}}">
+            <span class="links-text">{{zone.name}}</span>
+        </label>
+      {% endfor %}
+  </div>
+</div>
+
+<div class="advanced-search module category-style">
+  <h3 class="modtitle"><span>Harga </span> <button type="button"><i class="fa fa-angle-down" aria-hidden="true"></i></button></h3>
+  <div class="mod-content box-category">
+
+   <div class="form-group">
+    <div class="input-group">
+          <span class="input-group-addon">Rp</span>
+          <input type="number" name="min_price" placeholder="Harga Minimum" class="form-control">
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <div class="input-group">
+          <span class="input-group-addon">Rp</span>
+          <input type="number" name="max_price" placeholder="Harga Maksimum" class="form-control">
+      </div>
+    </div>
+   
+    </div>
+</div>
+
+<script>
+
+  let ajax;
+
+  let category_id = 0;
+
+  $('.advanced-search .modtitle button').click(function(){
+     $(this).parents('.advanced-search').find('.mod-content').slideToggle();
+  });
+
+  $(document).on('change', '#input-sort', function(){
+    let url = $(this).find(':selected').val();
+
+    if(url){
+      searchAjax(url);
+    }
+  });
+
+
+  $('input[name=\'min_price\'],input[name=\'max_price\']').blur(function(){
+    searchAjax();
+  });
+
+  $('input[name=\'search_location\']').change(function(){
+    searchAjax();
+  });
+
+  $('.advanced-search a').click(function(e){
+
+    e.preventDefault();
+
+    category_id = $(this).data('id');
+
+    $('.advanced-search a').removeClass('active');
+
+    $('.category' + category_id).addClass('active');
+    
+    searchAjax();
+  });
+
+
+  function searchAjax(url = null){
+
+    if(ajax !== undefined){
+      ajax.abort();
+    }
+    
+    if(url == null){
+      url = '';
+
+      let ids_location = [];
+
+      $('input[name="search_location"]:checked').each(function(){
+          ids_location.push($(this).val());
+      });
+
+      ids_location = ids_location.join(',');
+
+      let search = $('#content input[name=\'search\']').val();
+
+      if (search) {
+          url += '&search=' + encodeURIComponent(search);
+      }
+
+      let max_price = $('.advanced-search input[name=\'max_price\']').val();
+
+      if(max_price){
+        url += '&max_price=' + encodeURIComponent(max_price);
+      }
+
+      let min_price = $('.advanced-search input[name=\'min_price\']').val();
+
+      if(min_price){
+        url += '&min_price=' + encodeURIComponent(min_price);
+      }
+
+      if(category_id){
+        url += '&category_id=' + encodeURIComponent(category_id);
+      }
+
+      if(ids_location){
+        var separator = '&';
+
+        url += separator + 'location=' + ids_location;
+      }
+
+      url = 'index.php?route=product/search' + url; 
+
+    }
+
+    url += '&ajax=true';
+
+    ajax = $.ajax({
+        url: url,
+        beforeSend:function(){
+          //$('#content .products-category').addClass('loading');
+          $('#content .products-category').busyLoad("show", {
+                  spinner: "accordion",
+                  background: "#e0000057",
+          });
+        },
+        completed:function(){
+         // $('#content .products-category').removeClass('loading');
+
+          $('#content .products-category').busyLoad("hide");
+        },
+        success: function(html) {
+            $('#content .products-category').replaceWith(html);
+        }
+	});
+  }
+</script>

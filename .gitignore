@@ -1,0 +1,10 @@
+obfuscated/
+distribution/
+*.zip
+.DS_Store
+.idea/
+obf/
+build/
+vendor/
+RoboFile.php
+.env

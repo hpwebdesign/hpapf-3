@@ -25,7 +25,7 @@
                <li>
                 <button class="hpcd-menu-item">
                   <p tabindex="-1" class="hpcd-menu-item-heading">
-                    <a class="category{{category_1.category_id}}" data-id="{{category_1.category_id}}">{{ category_1.name }}</a>
+                    <a class="category{{category_1.category_id}} {% if category_id == category_1.category_id %} active {% endif %}" data-id="{{category_1.category_id}}">{{ category_1.name }}</a>
                   </p>
                 </button>
               </li>
@@ -35,7 +35,7 @@
                        <li>
                         <button class="hpcd-menu-item">
                           <p tabindex="-1" class="hpcd-menu-item-heading">
-                            <a class="category{{category_2.category_id}}" data-id="{{category_2.category_id}}">{{ category_2.name }}</a>
+                            <a class="category{{category_2.category_id}} {% if category_id == category_2.category_id %} active {% endif %}" data-id="{{category_2.category_id}}">{{ category_2.name }}</a>
                           </p>
                         </button>
                       </li>
@@ -45,7 +45,7 @@
                       <li>
                         <button class="hpcd-menu-item">
                           <p tabindex="-1" class="hpcd-menu-item-heading">
-                            <a class="category{{category_3.category_id}}" data-id="{{category_3.category_id}}">{{ category_3.name }}</a>
+                            <a class="category{{category_3.category_id}} {% if category_id == category_2.category_id %} active {% endif %}" data-id="{{category_3.category_id}}">{{ category_3.name }}</a>
                           </p>
                         </button>
                       </li>
@@ -130,7 +130,7 @@
 
   let ajax;
 
-  let category_id = 0;
+  let category_id = {{category_id}};
 
 
   $('.price-button').click(function(){
@@ -154,8 +154,17 @@
       }
   });
 
+  $(document).on('click', '.pagination a', function(e) {
+      e.preventDefault();
 
-  $('#search-hpapf input[name="submit_search"]').click(function(e) {
+      let url = $(this).attr('href');
+
+      searchAjax(url);
+  });
+
+
+
+  $('#search-hpapf button[name="submit_search"]').click(function(e) {
           searchAjax();
   });
 
@@ -202,6 +211,12 @@
     if(url == null){
       url = '';
 
+      var separator = '{{action}}'.includes('?') ? '&' : '?';
+
+      url += separator + 'ajax=true';
+
+
+
       let ids_location = [];
 
       $('input[name="search_location"]:checked').each(function(){
@@ -216,13 +231,13 @@
           url += '&search=' + encodeURIComponent(search);
       }
 
-      let max_price = $('.advanced-search input[name=\'max_price\']').val();
+      let max_price = $('input[name=\'max_price\']').val();
 
       if(max_price){
         url += '&max_price=' + encodeURIComponent(max_price);
       }
 
-      let min_price = $('.advanced-search input[name=\'min_price\']').val();
+      let min_price = $('input[name=\'min_price\']').val();
 
       if(min_price){
         url += '&min_price=' + encodeURIComponent(min_price);
@@ -233,16 +248,16 @@
       }
 
       if(ids_location){
-        var separator = '&';
-
-        url += separator + 'location=' + ids_location;
+        url += '&location=' + ids_location;
       }
 
-      url = 'index.php?route=product/search' + url; 
+      url = '{{action}}' + url; 
 
+    }else{
+      url += '&ajax=true';
     }
 
-    url += '&ajax=true';
+    
 
     ajax = $.ajax({
         url: url,

@@ -1,112 +1,130 @@
-<style>
-  .advanced-search label{
-    display:block;
-  }
 
- .advanced-search .mod-content{
-        padding: 10px;
-  }
+<link rel="stylesheet" type="text/css" href="catalog/view/javascript/hpapf.css">
 
-  #content .products-category.loading{
-    position:relative;
-  }
+ <div class="hpcd-side-menu">
+       
+       
+      
+        <div class="hpcd-menu-content">
+          <h3 id="content-category"  style="width:100%" class="hpcd-menu-heading">
+            <a data-toggle="collapse" data-parent="#content-category" href="#content-Category" aria-controls="content-Category" aria-expanded="true" type="button" class="hpcd-menu-header">
+              <span id="header-Category">Kategori</span>
+              <div class="hpcd-menu-icon">
+                <svg class="unf-icon unf-icon__chevron" viewBox="0 0 24 24" width="24" height="24" fill="var(--color-icon-enabled, #2E3137)" style="display:inline-block;vertical-align:middle;transform:rotate(-180deg)">
+                  <path d="M12 15.25a.74.74 0 01-.53-.22l-5-5A.75.75 0 017.53 9L12 13.44 16.47 9a.75.75 0 011.06 1l-5 5a.74.74 0 01-.53.25z"></path>
+                </svg>
+              </div>
+            </a>
+          </h3>
+          <div id="content-Category" aria-expanded="true" class="collapse in" role="region" aria-labelledby="header-Category" style="width:100%">
+            <ul class="hpcd-account-menu-list">
 
-  #content .products-category.loading::after{
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    top: 0;
-    left: 0;
-    z-index: 2;
-  }
+             {% for category_1 in categories %}
+               
 
-  .advanced-search .modtitle button{
-    border-radius: 50%;
-    border: none;
-    margin-left: auto;
-    background-color: transparent;
-    font-size: 20px;
-  }
+               <li>
+                <button class="hpcd-menu-item">
+                  <p tabindex="-1" class="hpcd-menu-item-heading">
+                    <a class="category{{category_1.category_id}}" data-id="{{category_1.category_id}}">{{ category_1.name }}</a>
+                  </p>
+                </button>
+              </li>
 
-  .advanced-search .modtitle{
-    display: flex;
-    align-items: center;
-  }
+                {% for category_2 in category_1.children %}
+                      
+                       <li>
+                        <button class="hpcd-menu-item">
+                          <p tabindex="-1" class="hpcd-menu-item-heading">
+                            <a class="category{{category_2.category_id}}" data-id="{{category_2.category_id}}">{{ category_2.name }}</a>
+                          </p>
+                        </button>
+                      </li>
 
-  .advanced-search .mod-content a{
-    display:block;
-  }
+                  {% for category_3 in category_2.children %}
 
-  .advanced-search .child1{
-    padding-left:10px;
-  }
+                      <li>
+                        <button class="hpcd-menu-item">
+                          <p tabindex="-1" class="hpcd-menu-item-heading">
+                            <a class="category{{category_3.category_id}}" data-id="{{category_3.category_id}}">{{ category_3.name }}</a>
+                          </p>
+                        </button>
+                      </li>
 
- .advanced-search .child2{
-    padding-left:20px;
-  }
+                  {% endfor %}
 
-  .advanced-search a.active{
-    color: #e00000;
-    font-weight: bold;
-  }
-</style>
-<script src="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.css" rel="stylesheet">
-<div class="advanced-search module category-style">
-  <h3 class="modtitle"><span>Kategori </span> <button type="button"><i class="fa fa-angle-down" aria-hidden="true"></i></button></h3>
-  <div class="mod-content box-category ff">
-    {% for category_1 in categories %}
-           <a class="category{{category_1.category_id}}" data-id="{{category_1.category_id}}">{{ category_1.name }}</a>
+                {% endfor %}
+          {% endfor %}
+    
+            
+            </ul>
+          </div>
+        </div>
 
-           {% for category_2 in category_1.children %}
-                 <a class="child1 category{{category_2.category_id}}" data-id="{{category_2.category_id}}">{{ category_2.name }}</a>
+        <div class="hpcd-menu-content">
+          <h3 id="content-location"  style="width:100%" class="hpcd-menu-heading">
+            <a data-toggle="collapse" data-parent="#content-location" href="#content-Location" aria-controls="content-Location" aria-expanded="true" type="button" class="hpcd-menu-header">
+              <span id="header-Location">Lokasi</span>
+              <div class="hpcd-menu-icon">
+                <svg class="unf-icon unf-icon__chevron" viewBox="0 0 24 24" width="24" height="24" fill="var(--color-icon-enabled, #2E3137)" style="display:inline-block;vertical-align:middle;transform:rotate(-180deg)">
+                  <path d="M12 15.25a.74.74 0 01-.53-.22l-5-5A.75.75 0 017.53 9L12 13.44 16.47 9a.75.75 0 011.06 1l-5 5a.74.74 0 01-.53.25z"></path>
+                </svg>
+              </div>
+            </a>
+          </h3>
+          <div id="content-Location" aria-expanded="true" class="collapse in" role="region" aria-labelledby="header-Location" style="width:100%">
+            <ul class="hpcd-account-menu-list">
 
-            {% for category_3 in category_2.children %}
+             {% for zone in zones %}
+              <label class="hpcd-menu-item">
+                  <input {% if zone.zone_id in locations %} checked {% endif %} type="checkbox" name="search_location" value="{{zone.zone_id}}">
+                  <span class="links-text">{{zone.name}}</span>
+              </label>
+            {% endfor %}
+    
+            
+            </ul>
+          </div>
+        </div>
 
-                <a class="child2 category{{category_3.category_id}}" data-id="{{category_3.category_id}}">{{ category_3.name }}</a>
 
+         <div class="hpcd-menu-content">
+          <h3 id="content-price"  style="width:100%" class="hpcd-menu-heading">
+            <a data-toggle="collapse" data-parent="#content-price" href="#content-Price" aria-controls="content-Price" aria-expanded="true" type="button" class="hpcd-menu-header">
+              <span id="header-Price">Harga</span>
+              <div class="hpcd-menu-icon">
+                <svg class="unf-icon unf-icon__chevron" viewBox="0 0 24 24" width="24" height="24" fill="var(--color-icon-enabled, #2E3137)" style="display:inline-block;vertical-align:middle;transform:rotate(-180deg)">
+                  <path d="M12 15.25a.74.74 0 01-.53-.22l-5-5A.75.75 0 017.53 9L12 13.44 16.47 9a.75.75 0 011.06 1l-5 5a.74.74 0 01-.53.25z"></path>
+                </svg>
+              </div>
+            </a>
+          </h3>
+          <div id="content-Price" aria-expanded="true" class="collapse in" role="region" aria-labelledby="header-Price" style="width:100%">
+            
+            <div class="form-group">
+              <div class="input-group">
+                    <span class="input-group-addon">Rp</span>
+                    <input type="number" name="min_price" placeholder="Harga Minimum" class="form-control">
+                </div>
+              </div>
+
+
+              <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">Rp</span>
+                    <input type="number" name="max_price" placeholder="Harga Maksimum" class="form-control">
+                </div>
+              </div>
+
+
+            {% for price in prices %}
+              <button data-min="{{price.min}}" data-max="{{price.max}}" class="price-button">{{price.text}}</button>
             {% endfor %}
 
-           {% endfor %}
-    {% endfor %}
-  </div>
-</div>
+          </div>
+        </div>
+      
 
-<div class="advanced-search module category-style">
-  <h3 class="modtitle"><span>Lokasi </span> <button type="button"><i class="fa fa-angle-down" aria-hidden="true"></i></button></h3>
-  <div class="mod-content box-category" style="display:none;">
-      {% for zone in zones %}
-        <label>
-            <input {% if zone.zone_id in locations %} checked {% endif %} type="checkbox" name="search_location" value="{{zone.zone_id}}">
-            <span class="links-text">{{zone.name}}</span>
-        </label>
-      {% endfor %}
-  </div>
-</div>
-
-<div class="advanced-search module category-style">
-  <h3 class="modtitle"><span>Harga </span> <button type="button"><i class="fa fa-angle-down" aria-hidden="true"></i></button></h3>
-  <div class="mod-content box-category">
-
-   <div class="form-group">
-    <div class="input-group">
-          <span class="input-group-addon">Rp</span>
-          <input type="number" name="min_price" placeholder="Harga Minimum" class="form-control">
       </div>
-    </div>
-
-
-    <div class="form-group">
-      <div class="input-group">
-          <span class="input-group-addon">Rp</span>
-          <input type="number" name="max_price" placeholder="Harga Maksimum" class="form-control">
-      </div>
-    </div>
-   
-    </div>
-</div>
 
 <script>
 
@@ -114,9 +132,35 @@
 
   let category_id = 0;
 
-  $('.advanced-search .modtitle button').click(function(){
-     $(this).parents('.advanced-search').find('.mod-content').slideToggle();
+
+  $('.price-button').click(function(){
+     let max = $(this).data('max');
+     let min = $(this).data('min');
+
+     $('input[name=\'max_price\']').val(max);
+
+     $('input[name=\'min_price\']').val(min);
+
+     searchAjax();
   });
+
+
+
+  $('#search-hpapf input[name="search"]').off();
+
+  $('#search-hpapf input[name="search"]').on('keypress',function(e) {
+      if(e.which == 13) {
+          searchAjax();
+      }
+  });
+
+
+  $('#search-hpapf input[name="submit_search"]').click(function(e) {
+          searchAjax();
+  });
+
+  
+
 
   $(document).on('change', '#input-sort', function(){
     let url = $(this).find(':selected').val();
@@ -135,13 +179,13 @@
     searchAjax();
   });
 
-  $('.advanced-search a').click(function(e){
+  $('#content-Category a').click(function(e){
 
     e.preventDefault();
 
     category_id = $(this).data('id');
 
-    $('.advanced-search a').removeClass('active');
+    $('#content-Category a').removeClass('active');
 
     $('.category' + category_id).addClass('active');
     
@@ -166,7 +210,7 @@
 
       ids_location = ids_location.join(',');
 
-      let search = $('#content input[name=\'search\']').val();
+      let search = $('#search-hpapf input[name=\'search\']').val();
 
       if (search) {
           url += '&search=' + encodeURIComponent(search);

@@ -27,10 +27,16 @@ class ControllerExtensionModuleHpAdvancedSearch extends Controller {
                 $value['name'] = $value['type'] . ' ' . $value['name'];
             }
 
+
+            $data['prices'] = $this->model_extension_module_hp_advanced_search->getListPrice($filter);
+
+
             // 3 Level Category Search
             $data['categories'] = array();
 
             $categories_1 = $this->model_extension_module_hp_advanced_search->getCategories(0, $filter);
+
+            
 
             foreach ($categories_1 as $category_1) {
                 $level_2_data = array();
@@ -66,6 +72,19 @@ class ControllerExtensionModuleHpAdvancedSearch extends Controller {
 
             return $this->load->view('extension/module/hpapf', $data);
         }
+    }
+
+
+    public function searchForm($data) {
+        $route = $this->request->get['route'] ?? '';
+
+        if($route != 'product/search'){
+           return $data['search_block'] ?? '';
+        }
+
+        $data['search'] = $this->request->get['search'] ?? '';
+
+        return $this->load->view('extension/module/hpapf_search_form', $data);
     }
 
     public function searchPage() {
@@ -878,6 +897,7 @@ class ControllerExtensionModuleHpAdvancedSearch extends Controller {
         $data['content_bottom'] = $this->load->controller('common/content_bottom');
         $data['footer'] = $this->load->controller('common/footer');
         $data['header'] = $this->load->controller('common/header');
+        
 
 
         if (isset($this->request->get['ajax'])) {

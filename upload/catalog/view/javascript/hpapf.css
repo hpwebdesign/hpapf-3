@@ -2137,3 +2137,28 @@ svg:not(:root) {
 #content-profile {
     width: 100%;
 }
+
+
+.nav-tabs-hpwd>li {
+    float: left;
+    margin-bottom: -1px;
+}
+
+.nav-tabs-hpwd>li.active>a, .nav-tabs-hpwd>li.active>a:focus, .nav-tabs-hpwd>li.active>a:hover {
+    color: #555;
+    cursor: default;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-bottom-color: transparent;
+}
+
+.nav-tabs-hpwd>li>a {
+    margin-right: 2px;
+    line-height: 1.42857143;
+    border: 1px solid transparent;
+    border-radius: 4px 4px 0 0;
+}
+
+.nav-tabs-hpwd {
+    border-bottom: 1px solid #ddd;
+}

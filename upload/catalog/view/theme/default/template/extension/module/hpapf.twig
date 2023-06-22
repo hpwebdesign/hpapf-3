@@ -4,7 +4,8 @@
  <div class="hpcd-side-menu">
        
        
-      
+        <input type="hidden" name="shop" value="0">
+
         <div class="hpcd-menu-content">
           <h3 id="content-category"  style="width:100%" class="hpcd-menu-heading">
             <a data-toggle="collapse" data-parent="#content-category" href="#content-Category" aria-controls="content-Category" aria-expanded="true" type="button" class="hpcd-menu-header">
@@ -144,6 +145,35 @@
      searchAjax();
   });
 
+  $('#search-produk, #search-shop').off();
+
+  $(document).on('click', '#search-produk, #search-shop',function(){
+    $(this).parent().find('li').removeClass('active');
+
+    $(this).addClass('active');
+
+    if($(this).attr('id') == 'search-produk'){
+        $('input[name="shop"]').val(0);
+     }else{
+        $('input[name="shop"]').val(1);
+     }
+
+     console.log(11);
+
+     searchAjax();
+  });
+
+  $('#search-produk, #search-shop').click(function(){
+    console.log(11);
+     if($(this).attr('id') == 'search-produk'){
+        $('input[name="shop"]').val(0);
+     }else{
+        $('input[name="shop"]').val(1);
+     }
+
+     searchAjax();
+  });
+
 
 
   $('#search-hpapf input[name="search"]').off();
@@ -224,6 +254,12 @@
       });
 
       ids_location = ids_location.join(',');
+
+      let shop = $('input[name="shop"]').val();
+
+      if(shop){
+          url += '&shop=' + encodeURIComponent(shop);
+      }
 
       let search = $('#search-hpapf input[name=\'search\']').val();
 

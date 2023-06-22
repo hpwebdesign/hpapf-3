@@ -75,6 +75,11 @@
 		  <input type="button" value="{{ button_search }}" id="button-search" class="btn btn-primary" />
 		</div> #}
 
+		<ul  class="nav nav-tabs-hpwd">
+            <li id="search-produk" class="active"><a>Produk</a></li>
+            <li id="search-shop"><a>Toko</a></li>
+        </ul>
+
         {% include 'default/template/extension/module/hpapf_product_list_ajax.twig' with {listingType: listingType} %}
         
 	  

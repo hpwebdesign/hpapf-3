@@ -1,0 +1,258 @@
+<div class="products-category">
+{% if vendors %}
+			  
+{#==== Product Listing ==== #}
+
+   {#
+****************************************************** 
+ * @package	SO Framework for Opencart 3.x
+ * @author	http://www.opencartworks.com
+ * @license	GNU General Public License
+ * @copyright(C) 2008-2017 opencartworks.com. All rights reserved.
+ ******************************************************
+#}
+{#====  Variables url parameter ==== #}
+{% if url_thumbgallery %} {% set thumbgallery = url_thumbgallery %}
+{% else %} {% set thumbgallery = soconfig.get_settings('card_gallery') %}{% endif %}
+
+{% if url_cartinfo %} {% set cartinfo = url_cartinfo %}
+{% else %} {% set cartinfo = soconfig.get_settings('desktop_addcart_position') %}{% endif %}
+
+
+{#==== filters panel Top==== #}
+<div class="product-filter product-filter-top filters-panel">
+  <div class="row">
+		<div class="col-sm-5 view-mode" style="display:none;">
+			{% set category_route = soconfig.get_route() %}
+			
+			{% if (column_left or column_right ) and category_route =='product/category' %}
+				{% if url_asideType %} {% set btn_canvas = url_asideType %}
+				{% else %}{% set btn_canvas = soconfig.get_settings('catalog_col_type') %}
+				{% endif %}
+
+				{% set class_btn_canvas = (btn_canvas =='off_canvas') ? '' : 'hidden-lg hidden-md' %}
+				<a href="javascript:void(0)" class="open-sidebar {{class_btn_canvas}}"><i class="fa fa-bars"></i>{{ text_sidebar }}</a>
+				<div class="sidebar-overlay "></div>
+			{% endif %}
+			<div class="list-view">
+				<div class="btn btn-gridview">{{text_gridview}}</div>
+				<button type="button" id="grid-view-2" class="btn btn-view hidden-sm hidden-xs">2</button>
+			  	<button type="button" id="grid-view-3" class="btn btn-view hidden-sm hidden-xs ">3</button>
+			  	<button type="button" id="grid-view-4" class="btn btn-view hidden-sm hidden-xs">4</button>
+			  	<button type="button" id="grid-view-5" class="btn btn-view hidden-sm hidden-xs">5</button>
+				<button type="button" id="grid-view" class="btn btn-default grid hidden-lg hidden-md" title="{{ button_grid }}"><i class="fa fa-th-large"></i></button>
+				<button type="button" id="list-view" class="btn btn-default list " title="{{ button_list }}"><i class="fa fa-bars"></i></button>
+				<button type="button" id="table-view" class="btn btn-view"><i class="fa fa-table" aria-hidden="true"></i></button>
+				
+			</div>
+		</div>
+	
+		<div class="short-by-show form-inline text-right col-md-12 col-sm-12 col-xs-12">
+			<div class="form-group short-by">
+				<label class="control-label" for="input-sort">{{ text_sort }}</label>
+				<select id="input-sort" class="form-control">
+					
+					{% for sorts in sorts %}
+					{% if sorts.value == '%s-%s'|format(sort, order) %}
+						<option value="{{ sorts.href }}" selected="selected">{{ sorts.text }}</option>
+					{% else %}
+					
+					<option value="{{ sorts.href }}">{{ sorts.text }}</option>
+					
+					{% endif %}
+					{% endfor %}
+				
+				</select>
+			</div>
+			{# <div class="form-group">
+				<label class="control-label" for="input-limit">{{ text_limit }}</label>
+				<select id="input-limit" class="form-control" onchange="location = this.value;">
+					{% for limits in limits %}
+					{% if limits.value == limit %}
+					<option value="{{ limits.href }}" selected="selected">{{ limits.text }}</option>
+					{% else %}
+					<option value="{{ limits.href }}">{{ limits.text }}</option>
+					{% endif %}
+					{% endfor %}
+				</select>
+			</div>
+			<div class="form-group product-compare hidden-sm hidden-xs"><a href="{{ compare }}" id="compare-total" class="btn btn-default">{{ text_compare }}</a></div> #}
+		</div>
+	
+  </div>
+</div>
+{#==== Product List|Grid ==== #}
+<style>
+.shop-layout a{
+    display: inline-flex;
+    /* flex-direction: column; */
+    width: 100%;
+    align-items: start;
+}
+
+.shop-layout{
+    margin-bottom:10px;
+}
+
+.shop-button{
+    margin-left: auto;
+}
+
+.shop-layout .shop-img{
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.shop-layout  > a{
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 2px 6px 0px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.products-list.row{
+    display: flex;
+    flex-wrap: wrap;
+}
+</style>
+<div class="products-list row nopadding-xs">
+	{% for  vendor in vendors %}
+	
+		<div class="shop-layout">
+			
+                 <a href="{{vendor.href}}">
+                   
+                    <img class="shop-img" src="{{vendor.smallthumb}}" alt="shop">
+                
+                    <div class="shop-desc">
+                        <div>{{vendor.storename}}</div>
+                        <div>{{vendor.city}}</div>
+                    </div>
+                   
+                    <button class="shop-button" type="button">Lihat Toko</button>
+                    
+                </a>
+
+		</div>     
+		
+		{# ====End Clearfix fluid grid layout =======#}
+	
+	{% endfor %}
+</div>
+
+{#==== filters panel Bottom==== #}
+<div class="product-filter product-filter-bottom filters-panel">
+	<div class="row">
+		<div class="col-sm-6 text-left">{{ pagination }}</div>
+		<div class="col-sm-6 text-right">{{ results }}</div>
+	</div>
+</div>
+
+{% if heading_title_category or  description %}
+<div class="category-info">
+{% if heading_title_category  %}
+   <div class="category-heading">{{ heading_title_category }}</div>
+{% endif %}
+
+{% if description %}
+   <div class="category-desc">{{description}}</div>
+{% endif %}
+{% endif %}
+
+<script type="text/javascript"><!--
+$('.products-category .shop-layout').attr('class', 'shop-layout product-grid col-lg-4 col-md-4 col-sm-6 col-xs-12');
+
+{# reinitView();
+
+function reinitView() {
+
+	$( '.product-card__gallery .item-img').hover(function() {
+		$(this).addClass('thumb-active').siblings().removeClass('thumb-active');
+		var thumb_src = $(this).attr("data-src");
+		$(this).closest('.product-item-container').find('img.img-responsive').attr("src",thumb_src);
+	}); 
+
+	$('.view-mode .list-view button').bind("click", function() {
+		$(this).parent().find('button').removeClass('active');
+		$(this).addClass('active');
+	});	
+	// Product List
+	$('#list-view').click(function() {
+		$('.products-category .product-layout').attr('class', 'product-layout product-list col-xs-12');
+		localStorage.setItem('listview', 'list');
+	});
+
+	// Product Grid
+	$('#grid-view').click(function() {
+		var cols = $('.left_column , .right_column ').length;
+
+		
+		$('.products-category .product-layout').attr('class', 'product-layout product-grid col-lg-3 col-md-3 col-sm-6 col-xs-12');
+		
+		localStorage.setItem('listview', 'grid');
+	});
+
+	// Product Grid 2
+	$('#grid-view-2').click(function() {
+		$('.products-category .product-layout').attr('class', 'product-layout product-grid product-grid-2 col-lg-6 col-md-6 col-sm-6 col-xs-12');
+		localStorage.setItem('listview', 'grid-2');
+	});
+
+	// Product Grid 3
+	$('#grid-view-3').click(function() {
+		$('.products-category .product-layout').attr('class', 'product-layout product-grid product-grid-3 col-lg-4 col-md-4 col-sm-6 col-xs-12');
+		localStorage.setItem('listview', 'grid-3');
+	});
+
+	// Product Grid 4
+	$('#grid-view-4').click(function() {
+		$('.products-category .product-layout').attr('class', 'product-layout product-grid product-grid-4 col-lg-3 col-md-4 col-sm-6 col-xs-12');
+		localStorage.setItem('listview', 'grid-4');
+	});
+
+	// Product Grid 5
+	$('#grid-view-5').click(function() {
+		$('.products-category .product-layout').attr('class', 'product-layout product-grid product-grid-5 col-lg-15 col-md-4 col-sm-6 col-xs-12');
+		localStorage.setItem('listview', 'grid-5');
+	});
+
+	// Product Table
+	$('#table-view').click(function() {
+		$('.products-category .product-layout').attr('class', 'product-layout product-table col-xs-12');
+		localStorage.setItem('listview', 'table');
+	})
+
+	
+	{% if url_listview %}
+		localStorage.setItem('listview', '{{url_listview}}');
+	{% else %}
+		if(localStorage.getItem('listview')== null) localStorage.setItem('listview', '{{soconfig.get_settings('product_catalog_mode')}}');
+	{% endif %}
+
+	if (localStorage.getItem('listview') == 'table') {
+		$('#table-view').trigger('click');
+	} else if (localStorage.getItem('listview') == 'grid-2'){
+		$('#grid-view-2').trigger('click');
+	} else if (localStorage.getItem('listview') == 'grid-3'){
+		$('#grid-view-3').trigger('click');
+	} else if (localStorage.getItem('listview') == 'grid-4'){
+		$('#grid-view-4').trigger('click');
+	} else if (localStorage.getItem('listview') == 'grid-5'){
+		$('#grid-view-5').trigger('click');
+	} else {
+		$('#list-view').trigger('click');
+	}
+	
+
+} #}
+
+//--></script> 
+
+
+{% else %}
+    <p>{{ text_empty }}</p>
+    <div class="buttons">
+        <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+    </div>
+{% endif %}
+</div>

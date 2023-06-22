@@ -20,6 +20,60 @@ class ModelExtensionModuleHpAdvancedSearch extends Model {
     }
 
 
+    public function getTotalVendors($data) {
+		$sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "vendor v LEFT JOIN " . DB_PREFIX . "vendor_description vd on(v.vendor_id = vd.vendor_id) WHERE v.vendor_id<>0  AND v.approved!=0   AND v.status!=0  AND vd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+		
+        if (!empty($data['filter_name'])) {
+            $sql .= " AND vd.name LIKE '%" . $data['filter_name'] . "%'";
+        }
+
+        $query = $this->db->query($sql);
+
+		return $query->row['total'];
+	}
+
+
+    public function getVendors($data=array()){
+		/* 01-02-2019 approved code  23-02-2019 update */ 
+		$sql="select * from " . DB_PREFIX . "vendor v LEFT JOIN " . DB_PREFIX . "vendor_description vd on(v.vendor_id = vd.vendor_id) WHERE v.vendor_id<>0  AND v.approved!=0   AND v.status!=0  AND vd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+			
+        if (!empty($data['filter_name'])) {
+            $sql .= " AND vd.name LIKE '%" . $data['filter_name'] . "%'";
+        }
+      //  $sql .= " AND "
+		$sort_data = array(
+			'v.vendor_id'
+		);
+
+		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
+			$sql .= " ORDER BY " . $data['sort'];
+		} else {
+			$sql .= " ORDER BY v.vendor_id";
+		}
+
+		if (isset($data['order']) && ($data['order'] == 'DESC')) {
+			$sql .= " DESC";
+		} else {
+			$sql .= " ASC";
+		}
+
+		if (isset($data['start']) || isset($data['limit'])) {
+			if ($data['start'] < 0) {
+				$data['start'] = 0;
+			}
+
+			if ($data['limit'] < 1) {
+				$data['limit'] = 20;
+			}
+
+			$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
+		}
+
+		$query = $this->db->query($sql);
+		return $query->rows;	
+ 	}
+
+
     public function getListPrice($data){
        $max_price =  (float) $this->db->query("SELECT MAX(price) AS max_price FROM " . DB_PREFIX . "product  WHERE product_id IN(" .$this->getProductsSql($data). ")")->row['max_price'] ?? '';
 
